@@ -11,15 +11,15 @@ class MongoDatabase:
     async def connect(self):
         self.client = AsyncIOMotorClient(SETTINGS.MONGO_URI)
         await init_beanie(
-            database=self.client[SETTINGS.DB_NAME],
+            database=self.client[SETTINGS.MONGO_DB],
             document_models=DOCUMENT_MODELS,
         )
         for model in DOCUMENT_MODELS:
             if (
                 model.get_settings().name
-                not in await self.client[SETTINGS.DB_NAME].list_collection_names()
+                not in await self.client[SETTINGS.MONGO_DB].list_collection_names()
             ):
-                await self.client[SETTINGS.DB_NAME].create_collection(
+                await self.client[SETTINGS.MONGO_DB].create_collection(
                     model.get_settings().name
                 )
         LOGGER.info("MongoDB connection initialized")
