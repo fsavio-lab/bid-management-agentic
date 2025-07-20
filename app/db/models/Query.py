@@ -1,4 +1,3 @@
-from __future__ import annotations
 from beanie import Document, before_event, Insert, Link
 from pydantic import BaseModel, Field
 from typing import List, Optional, TYPE_CHECKING
@@ -10,7 +9,7 @@ if TYPE_CHECKING:
 
 
 class Query(Document):
-    tender: Link[Tender]
+    tender: Link["Tender"]
     sender_company: str
     sender_department: Optional[str] = None
     question: str
@@ -26,3 +25,7 @@ class Query(Document):
     @before_event(Insert)
     async def generate_id(self):
         return await create_identifier(self)
+
+
+from app.db.models.Tender import Tender
+Query.model_rebuild()

@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from typing import Generic, TypeVar, List
-from pydantic.generics import GenericModel
 from fastapi import Query
 from typing import Sequence
 from math import ceil
@@ -13,7 +12,7 @@ class PaginationParams(BaseModel):
     size: int = 10
 
 
-class PageResponse(GenericModel, Generic[T]):
+class PageResponse(BaseModel, Generic[T]):
     data: List[T]
     page: int
     size: int

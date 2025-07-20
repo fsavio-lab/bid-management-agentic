@@ -4,9 +4,9 @@ from typing import List, Optional, TYPE_CHECKING
 from datetime import datetime, timezone
 from app.db.utils.events import create_identifier
 
-
 if TYPE_CHECKING:
-    from app.db.models import Tender, File
+    from app.db.models.Tender import Tender
+    from app.db.models.File import File
 
 class Bid(Document):
     tender: Link["Tender"]
@@ -23,3 +23,7 @@ class Bid(Document):
     @before_event(Insert)
     async def generate_id(self):
         return await create_identifier(self)
+
+from app.db.models.Tender import Tender
+from app.db.models.File import File
+Bid.model_rebuild()

@@ -1,13 +1,10 @@
-from beanie import Document, before_event, Insert, Link, BackLink
+from beanie import Document, before_event, Insert, Link, BackLink, PydanticObjectId
 from pydantic import BaseModel, Field
-from typing import List, Optional, TYPE_CHECKING
+from typing import List, Optional
 from datetime import datetime, timezone
 from app.db.utils.events import create_identifier
 from enum import Enum
-if TYPE_CHECKING:
-    from app.db.models.File import File
-    from app.db.models.Query import Query
-    from app.db.models.Review import ReviewSet
+from app.db.models.File import File
 
 
 class TenderType(str, Enum):
@@ -72,3 +69,30 @@ class Tender(Document):
     @before_event(Insert)
     async def generate_id(self):
         return await create_identifier(self)
+
+
+class TenderUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    tender_type: Optional[TenderType] = None
+    category: Optional[str] = None
+    organization_name: Optional[str] = None
+    department: Optional[str] = None
+
+    estimated_value_inr: Optional[float] = None
+    emd_amount_inr: Optional[float] = None
+    tender_fee_inr: Optional[float] = None
+
+    publication_date: Optional[datetime] = None
+    submission_deadline: Optional[datetime] = None
+    opening_date: Optional[datetime] = None
+
+    status: Optional[TenderStatus] = None
+
+    attachments: Optional[List[PydanticObjectId]] = None
+
+
+from app.db.models.Review import ReviewSet
+from app.db.models.Query import Query
+
+Tender.model_rebuild()
